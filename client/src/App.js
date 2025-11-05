@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import "./App.css";
 
 function App() {
@@ -10,11 +10,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
 
-useEffect(() => {
-  fetchPosts();
-}, []);
 
-  const fetchPosts = async () => {
+    const fetchPosts = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:5000/api/posts");
       const data = await res.json();
@@ -26,7 +23,13 @@ useEffect(() => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [] );
+  
+useEffect(() => {
+  fetchPosts();
+}, [fetchPosts]);
+
+
 
   const addError = (msg) => {
     setErrors((prev) => (prev.includes(msg) ? prev : [...prev, msg]));
